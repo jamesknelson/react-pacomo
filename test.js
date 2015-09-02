@@ -111,8 +111,8 @@ describe('#pacomo', () => {
     const pacomo = createDecorator('prefix')(BareComponent).prototype.pacomo
     
     assert.equal(
-      pacomo('test'),
-      'prefix-BareComponent-test',
+      pacomo('test1', 'test2'),
+      'prefix-BareComponent-test1 prefix-BareComponent-test2',
       "`pacomo` produces the correct string when a string is passed in"
     )
   })

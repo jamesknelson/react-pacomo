@@ -12,7 +12,16 @@ export function createDecorator(prefix) {
       "pacomo must be applied to a class with no `pacomo` property"
     )
 
-    const decoratedComponent = class extends component {
+    return class extends component {
+      static displayName = componentName
+
+      // Add `className` propType, if none exists
+      static propTypes =
+        Object.assign(
+          {className: PropTypes.string},
+          component.propTypes
+        )
+
       pacomo(...args) {
         return (
           classNames(...args)
@@ -31,18 +40,5 @@ export function createDecorator(prefix) {
         )
       }
     }
-
-    // Add `className` propType, if none exists
-    if (!decoratedComponent.propTypes) {
-      decoratedComponent.propTypes = {}
-    }
-    if (!decoratedComponent.propTypes.className) {
-      decoratedComponent.propTypes = Object.assign(
-        {className: PropTypes.string},
-        decoratedComponent.propTypes
-      )
-    }
-
-    return decoratedComponent
   }
 }
