@@ -3,7 +3,7 @@ import invariant from 'invariant'
 import {PropTypes, cloneElement} from 'react'
 
 
-export function createDecorator(prefix) {
+export default function createDecorator(prefix) {
   return function decorator(component) {
     const componentName = component.displayName || component.name
 

@@ -1,4 +1,4 @@
-import {createDecorator} from './lib/pacomo'
+import createDecorator from './lib/pacomo'
 import {Component, DOM, PropTypes, createElement} from 'react'
 import TestUtils from 'react-addons-test-utils'
 import assert from 'assert'
