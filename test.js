@@ -52,15 +52,15 @@ describe('decorator', () => {
     const decoratedClass = createDecorator('prefix')(FullFeaturedComponent)
 
     assert.equal(
-      decoratedClass.propTypes.active,
-      PropTypes.bool,
-      "className propType from original class is passed through"
+      decoratedClass.propTypes.className,
+      PropTypes.string.isRequired,
+      "className propType from origina class are passed through"
     )
 
     assert.equal(
-      decoratedClass.propTypes.className,
-      PropTypes.string.isRequired,
-      "other propTypes from origina class are passed through"
+      decoratedClass.propTypes.active,
+      PropTypes.bool,
+      "other propTypes from original class is passed through"
     )
   })
 
