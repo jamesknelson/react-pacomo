@@ -121,7 +121,7 @@ The pacomo guidelines specify that your component's root element *must* have a C
 
 For example:
 
-```javascript
+```jsx
 let Wrapper = props => <div {...props}>{props.children}</div>
 Wrapper = transformer(Wrapper)
 ```
@@ -134,7 +134,7 @@ This means that you use [classnames](https://www.npmjs.com/package/classnames) o
 
 For example:
 
-```javascript
+```jsx
 @decorator
 class NavItem extends Component {
   render() {
@@ -154,7 +154,7 @@ Since any `className` you to add your returned `ReactElement` will be automatica
 
 For example, if we used the NavItem component from above within a SideNav component, we could still pass a `className` to it:
 
-```javascript
+```jsx
 @decorator
 class SideNav extends Component {
   render() {
