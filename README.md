@@ -4,13 +4,15 @@ React-pacomo transforms your component `className` props by prefixing them with 
 
 React-pacomo's **output is predicatable**. This means that when you *do* want to override component CSS, you *can*. This makes it more suited for public libraries than inline style or CSS Modules.
 
+For an example of react-pacomo in action, see the [Unicorn Standard Starter Kit](https://github.com/unicorn-standard/starter-kit).
+
 ## Installation
 
 ```
 npm install react-pacomo --save
 ```
 
-## What react-pacomo does
+## A simple example
 
 Say you've got a `NavItem` component which renders some JSX:
 
