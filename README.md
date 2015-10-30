@@ -1,14 +1,8 @@
 # react-pacomo
 
-**react-pacomo** disentangles your React CSS by automatically prefixing `className` props with a [pacomo](http://unicornstandard.com/packages/pacomo.html) namespace.
+React-pacomo transforms your component `className` props by prefixing them with a [pacomo](http://unicornstandard.com/packages/pacomo.html), or `packageName-ComponentName-` namespace. As a result, **your component's CSS will be effectively locally scoped**. Just like with [CSS Modules](https://github.com/css-modules/css-modules), but *without requiring a build step*. React-pacomo also takes care of other common tasks like selecting classes and handling `props.className`.
 
-## A what namespace?
-
-A **pacomo**, or **package-Component-modifier** namespace. In other words, this package will prefix your `className` props with the name of your package, and the name of the component in which it is found: 
-
-```
-applicationName-ComponentName-className
-```
+React-pacomo's **output is predicatable**. This means that when you *do* want to override component CSS, you *can*. This makes it more suited for public libraries than inline style or CSS Modules.
 
 ## Installation
 
@@ -16,7 +10,7 @@ applicationName-ComponentName-className
 npm install react-pacomo --save
 ```
 
-## A simple example
+## What react-pacomo does
 
 Say you've got a `NavItem` component which renders some JSX:
 
@@ -34,9 +28,9 @@ class NavItem extends Component {
 }
 ```
 
-While this works, it *won't* work if you ever import a library which defines *other* styles for `.icon`, `.NavItem`, etc. So to make your code more robust, you decide to add pacomo namespacing.
+While this works, it *won't* work if you ever import a library which defines *other* styles for `.icon`, `.NavItem`, etc. -- which is why you need to namespace your classes.
 
-If your app is called `unicorn`, it'll looks something like this:
+If your app is called `unicorn`, your namespaced component will look something like this:
 
 ```jsx
 class NavItem extends Component {
@@ -52,7 +46,7 @@ class NavItem extends Component {
 }
 ```
 
-But while your styles are now safe from interference, repeatedly typing long namespaces is downright *painful*. But luckily, *you don't have to!* Because with **react-pacomo**transforming the result of your `render` method, this will render *exactly* the same HTML as the above snippet:
+But while your styles are now safe from interference, repeatedly typing long strings isn't fun. So let's apply react-pacomo's [higher order component](http://jamesknelson.com/structuring-react-applications-higher-order-components/). By using `pacomoDecorator`, the following component will emit *exactly* the same HTML and `className` props as the above snippet:
 
 ```jsx
 @pacomoDecorator
@@ -267,6 +261,45 @@ In practice, this looks something like this:
 ### Following the Pacomo CSS Guidelines
 
 Namespacing your classes is the first step to taming your CSS, but it isn't the only one. The Pacomo System provides a number of other [guidelines](http://unicornstandard.com/packages/pacomo.html). Read them and use them.
+
+## Comparisons with other solutions
+
+### CSS Moudles
+
+Like react-pacomo, [CSS Modules](https://github.com/css-modules/css-modules)** automatically namespace your CSS classes. However, instead of runtime prefixing with React, it relies on your build system to do the prefixing.
+
+Use CSS Modules instead when performance counts, you don't mind being a little more verbose, and you're *not* writing a library (where being able to monkey patch is important).
+
+#### Pros
+
+- No runtime transformation (and thus possibly faster)
+- CSS class names can be minified (meaning less data over the wire)
+- Does not require a `displayName` when minifed
+
+#### Cons
+
+- Depends on a build system
+- Does not handle `props.className` automatically
+- Does not append a root class automatically
+- DOes not handle [classnames](npmjs.com/package/classnames) objects
+- You don't know your class names ahead of time, meaning no monkey-patching
+
+### Inline Style
+
+Inline Style takes a completely different approach, assigning your styles directly to the element's `style` property instead of using CSS.
+
+While this *may* be useful when sharing code between react-native and react-dom, [it has a number of drawbacks](http://jamesknelson.com/why-you-shouldnt-style-with-javascript/). Unless you're writing an exclusively native app, I recommend using react-pacomo or CSS Modules for your web app styles instead.
+
+#### Pros
+
+- Styles can be re-used with react-native apps
+- Styles can be processed with JavaScript
+
+#### Cons
+
+- **Cannot re-use existing CSS code or tooling**
+- Inline Style has the highest priority, preventing monkey patching
+- Media queries and pseudo selectors are complicated or impossible
 
 ## FAQ
 
