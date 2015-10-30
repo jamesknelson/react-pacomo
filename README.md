@@ -1,6 +1,6 @@
 # react-pacomo
 
-React-pacomo transforms your component `className` props by prefixing them with a [pacomo](http://unicornstandard.com/packages/pacomo.html), or `packageName-ComponentName-` namespace. As a result, **your component's CSS will be effectively locally scoped**. Just like with [CSS Modules](https://github.com/css-modules/css-modules), but *without requiring a build step*. React-pacomo also takes care of other common tasks like selecting classes and handling `props.className`.
+React-pacomo transforms your component `className` props by prefixing them with a [pacomo](http://unicornstandard.com/packages/pacomo.html), or `packageName-ComponentName-` namespace. As a result, **your component's CSS will be effectively locally scoped** -- just like with [CSS Modules](https://github.com/css-modules/css-modules), but *without requiring a build step*. React-pacomo also takes care of other common tasks like selecting classes and handling `props.className`.
 
 React-pacomo's **output is predicatable**. This means that when you *do* want to override component CSS, you *can*. This makes it more suited for public libraries than inline style or CSS Modules.
 
