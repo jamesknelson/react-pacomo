@@ -5,16 +5,21 @@ import assert from 'assert'
 
 
 const testTransform = transformWithPrefix('test')
+const { transformer, decorator } = withPackageName('prefix')
 
 
 /*
  * Util
  */
 
-function renderComponent(Component, props) {
-  const shallowRenderer = TestUtils.createRenderer()
-  shallowRenderer.render(<Component {...props} />)
-  return shallowRenderer.getRenderOutput()
+function shallowRenderElement(element) {
+ const shallowRenderer = TestUtils.createRenderer()
+  shallowRenderer.render(element)
+  return shallowRenderer.getRenderOutput() 
+}
+
+function shallowRenderComponent(Component, props) {
+  return shallowRenderElement(<Component {...props} />)
 }
 
 
@@ -44,6 +49,13 @@ class BareComponent extends Component {
 }
 
 
+class ContainerComponent extends Component {
+  render() {
+    return <div>{this.props.children}</div>
+  }
+}
+
+
 function FullStatelessComponent(props) {
   return <div className={{active: props.active}} />
 }
@@ -62,15 +74,15 @@ function BareStatelessComponent(props) {
 }
 
 
-function Button() {
-  return <div />
+function ContainerStatelessComponent({children}) {
+  return <div>{children}</div>
 }
 
 
 function nestedElement({active}) {
   return (
     <nav className='nav' untransformed={<div className="untransformed" />}>
-      <Button
+      <ContainerStatelessComponent
         className={{link1: true, active: active == 'link1'}}
         focusable={<a className="Link" />}
         untransformed={[
@@ -80,14 +92,14 @@ function nestedElement({active}) {
       >
         <span>Test</span>
         Test
-      </Button>
-      <Button
+      </ContainerStatelessComponent>
+      <ContainerStatelessComponent
         className={{link2: true, active: active == 'link2'}}
         focusable={<a className="Link" />}
       >
         <span>Test</span>
         Test
-      </Button>
+      </ContainerStatelessComponent>
     </nav>
   )
 }
@@ -100,7 +112,7 @@ function nestedElement({active}) {
 
 describe('decorator', () => {
   it("should pass through propTypes from the original class", () => {
-    const decoratedClass = withPackageName('prefix').decorator(FullComponent)
+    const decoratedClass = decorator(FullComponent)
 
     assert.equal(
       decoratedClass.propTypes.className,
@@ -116,7 +128,7 @@ describe('decorator', () => {
   })
 
   it("should add a className propType if one doesn't already exist", () => {
-    const decoratedClass = withPackageName('prefix').decorator(BareComponent)
+    const decoratedClass = decorator(BareComponent)
 
     assert.equal(
       decoratedClass.propTypes.className,
@@ -129,7 +141,7 @@ describe('decorator', () => {
 
 describe('transformer', () => {
   it("should pass through propTypes from the original function", () => {
-    const transformedFunction = withPackageName('prefix').transformer(FullStatelessComponent)
+    const transformedFunction = transformer(FullStatelessComponent)
 
     assert.equal(
       transformedFunction.propTypes.className,
@@ -145,7 +157,7 @@ describe('transformer', () => {
   })
 
   it("should add a className propType if one doesn't already exist", () => {
-    const transformedFunction = withPackageName('prefix').transformer(BareStatelessComponent)
+    const transformedFunction = transformer(BareStatelessComponent)
 
     assert.equal(
       transformedFunction.propTypes.className,
@@ -158,8 +170,8 @@ describe('transformer', () => {
 
 describe('#render', () => {
   it("respects the values of passed in `props`", () => {
-    const rendered = renderComponent(
-      withPackageName('prefix').decorator(FullComponent),
+    const rendered = shallowRenderComponent(
+      decorator(FullComponent),
       {className: 'passedIn', active: false}
     )
 
@@ -170,7 +182,7 @@ describe('#render', () => {
   })
 
   it("repects the value of the original class's `defaultProps`", () => {
-    const rendered = renderComponent(withPackageName('prefix').decorator(FullComponent))
+    const rendered = shallowRenderComponent(decorator(FullComponent))
 
     assert.equal(
       rendered.props.className,
@@ -179,11 +191,23 @@ describe('#render', () => {
   })
 
   it("works correctly when `super.render` does not return a `className`", () => {
-    const rendered = renderComponent(withPackageName('prefix').decorator(BareComponent))
+    const rendered = shallowRenderComponent(decorator(BareComponent))
 
     assert.equal(
       rendered.props.className.trim(),
       'prefix-BareComponent'
+    )
+  })
+
+  it("adds `__pacomoSkip` to the any `children`", () => {
+    const rendered = shallowRenderComponent(
+      decorator(ContainerComponent),
+      { children: <div className='icon' /> }
+    )
+
+    assert.equal(
+      rendered.props.children[0].props.__pacomoSkip,
+      true
     )
   })
 })
@@ -191,8 +215,8 @@ describe('#render', () => {
 
 describe('stateless render', () => {
   it("respects the values of passed in `props`", () => {
-    const rendered = renderComponent(
-      withPackageName('prefix').transformer(FullStatelessComponent),
+    const rendered = shallowRenderComponent(
+      transformer(FullStatelessComponent),
       {className: 'passedIn', active: false}
     )
 
@@ -203,7 +227,7 @@ describe('stateless render', () => {
   })
 
   it("repects the value of the original class's `defaultProps`", () => {
-    const rendered = renderComponent(withPackageName('prefix').transformer(FullStatelessComponent))
+    const rendered = shallowRenderComponent(transformer(FullStatelessComponent))
 
     assert.equal(
       rendered.props.className,
@@ -212,7 +236,7 @@ describe('stateless render', () => {
   })
 
   it("works correctly when `super.render` does not return a `className`", () => {
-    const rendered = renderComponent(withPackageName('prefix').transformer(BareStatelessComponent))
+    const rendered = shallowRenderComponent(transformer(BareStatelessComponent))
 
     assert.equal(
       rendered.props.className.trim(),
@@ -220,8 +244,16 @@ describe('stateless render', () => {
     )
   })
 
-  it("handles nested components", () => {
-    const rendered = renderComponent(withPackageName('prefix').transformer(nestedElement))
+  it("adds `__pacomoSkip` to the any `children`", () => {
+    const rendered = shallowRenderComponent(
+      transformer(ContainerStatelessComponent),
+      { children: <div className='icon' /> }
+    )
+
+    assert.equal(
+      rendered.props.children[0].props.__pacomoSkip,
+      true
+    )
   })
 })
 
@@ -249,6 +281,16 @@ describe('prefixedClassNames', () => {
 
 
 describe('transformWithPrefix', () => {
+  it("does not transform elements with the __pacomoSkip prop", () => {
+    const originalElement = <div className="test" __pacomoSkip />
+    const transformedElement = testTransform(originalElement)
+
+    assert.equal(
+      originalElement,
+      transformedElement
+    )
+  })
+
   it("transforms the passed in element", () => {
     const transformed = testTransform(nestedElement({active: 'link1'}))
 
