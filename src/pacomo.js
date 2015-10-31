@@ -54,8 +54,9 @@ export function transformWithPrefix(prefix) {
     }
     
     if (typeof element.type === 'function') {
-      for (let [key, value] of Object.entries(element.props)) {
+      for (let key of Object.keys(element.props)) {
         if (key == 'children') continue
+        const value = element.props[key]
         if (isValidElement(value)) {
           const transformed = childTransform(value)
           if (transformed !== value) {
