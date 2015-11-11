@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import { isValidElement, cloneElement, Children, PropTypes } from 'react'
 
 
-export function prefixedClassNames(prefix, ...args) {
+function prefixedClassNames(prefix, ...args) {
   return (
     classNames(...args)
       .split(/\s+/)
@@ -75,7 +75,7 @@ function skipPropElements(props) {
 }
 
 
-export function transformWithPrefix(prefix) {
+function transformWithPrefix(prefix) {
   const childTransform = element => transform(element)
 
   // Prefix all `className` props on the passed in ReactElement object, its
@@ -109,7 +109,7 @@ export function transformWithPrefix(prefix) {
 }
 
 
-export function withPackageName(packageName) {
+function withPackageName(packageName) {
   return {
     // Transform a stateless function component
     transformer(componentFunction) {
@@ -139,12 +139,7 @@ export function withPackageName(packageName) {
       const prefix = `${packageName}-${componentName}`
       const transform = transformWithPrefix(prefix)
 
-      return class DecoratedComponent extends componentClass {
-        static displayName = `pacomo(${componentName})`
-
-        // Add `className` propType, if none exists
-        static propTypes = { className: PropTypes.string, ...componentClass.propTypes }
-
+      const DecoratedComponent = class DecoratedComponent extends componentClass {
         render() {
           const rawProps = this.props
           this.props = skipPropElements(this.props)
@@ -153,6 +148,16 @@ export function withPackageName(packageName) {
           return transformed
         }
       }
+
+      DecoratedComponent.displayName = `pacomo(${componentName})`
+
+      // Add `className` propType, if none exists
+      DecoratedComponent.propTypes = { className: PropTypes.string, ...componentClass.propTypes }
+
+      return DecoratedComponent  
     },
   }
 }
+
+
+export { withPackageName, prefixedClassNames, transformWithPrefix }
