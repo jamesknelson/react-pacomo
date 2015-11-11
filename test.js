@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import {prefixedClassNames, withPackageName, transformWithPrefix} from './lib/pacomo'
 import React, {Component, PropTypes} from 'react'
 import TestUtils from 'react-addons-test-utils'
