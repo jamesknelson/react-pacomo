@@ -2,7 +2,7 @@ import classNames from 'classnames'
 import { isValidElement, cloneElement, Children, PropTypes } from 'react'
 
 
-function prefixedClassNames(prefix, ...args) {
+export function prefixedClassNames(prefix, ...args) {
   return (
     classNames(...args)
       .split(/\s+/)
@@ -75,7 +75,7 @@ function skipPropElements(props) {
 }
 
 
-function transformWithPrefix(prefix) {
+export function transformWithPrefix(prefix) {
   const childTransform = element => transform(element)
 
   // Prefix all `className` props on the passed in ReactElement object, its
@@ -109,7 +109,7 @@ function transformWithPrefix(prefix) {
 }
 
 
-function withPackageName(packageName) {
+export function withPackageName(packageName) {
   return {
     // Transform a stateless function component
     transformer(componentFunction) {
@@ -158,6 +158,3 @@ function withPackageName(packageName) {
     },
   }
 }
-
-
-export { withPackageName, prefixedClassNames, transformWithPrefix }
