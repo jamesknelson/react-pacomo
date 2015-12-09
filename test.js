@@ -1,11 +1,17 @@
 import 'babel-polyfill'
-import {prefixedClassNames, withPackageName, transformWithPrefix} from './lib/pacomo'
+import {
+    PacomoStrategy,
+    prefixedClassNames,
+    withPackageName,
+    transformWithPrefix
+} from './lib/pacomo'
 import React, {Component, PropTypes} from 'react'
 import TestUtils from 'react-addons-test-utils'
 import assert from 'assert'
 
-
-const testTransform = transformWithPrefix('test')
+const testTransform = transformWithPrefix({
+    getPropClassName: (component, name)=> `test-${name}`
+});
 const { transformer, decorator } = withPackageName('prefix')
 
 
@@ -16,7 +22,7 @@ const { transformer, decorator } = withPackageName('prefix')
 function shallowRenderElement(element) {
  const shallowRenderer = TestUtils.createRenderer()
   shallowRenderer.render(element)
-  return shallowRenderer.getRenderOutput() 
+  return shallowRenderer.getRenderOutput()
 }
 
 function shallowRenderComponent(Component, props) {
@@ -260,9 +266,16 @@ describe('stateless render', () => {
 
 
 describe('prefixedClassNames', () => {
+  let strategy;
+  beforeEach(()=>{
+      strategy = {
+          getPropClassName: (component, name)=> `test-prefix-${name}`
+      };
+  })
+
   it("accepts an object, producing the correct result", () => {
     assert.equal(
-      prefixedClassNames('test-prefix', {
+      prefixedClassNames(strategy, null, {
         active: true,
         inactive: false,
       }),
@@ -273,7 +286,7 @@ describe('prefixedClassNames', () => {
 
   it("accepts a string, producing the correct result", () => {
     assert.equal(
-      prefixedClassNames('test-prefix', 'test1', 'test2'),
+      prefixedClassNames(strategy, null, 'test1', 'test2'),
       'test-prefix-test1 test-prefix-test2',
       "`classNames` produces the correct string when a string is passed in"
     )
