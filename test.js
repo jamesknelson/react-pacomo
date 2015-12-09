@@ -133,16 +133,6 @@ describe('decorator', () => {
       "other propTypes from original class is passed through"
     )
   })
-
-  it("should add a className propType if one doesn't already exist", () => {
-    const decoratedClass = decorator(BareComponent)
-
-    assert.equal(
-      decoratedClass.propTypes.className,
-      PropTypes.string,
-      "className propType exists"
-    )
-  })
 })
 
 
