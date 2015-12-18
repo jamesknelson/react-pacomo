@@ -266,7 +266,7 @@ Namespacing your classes is the first step to taming your CSS, but it isn't the 
 
 ## Comparisons with other solutions
 
-### CSS Moudles
+### CSS Modules
 
 Like react-pacomo, [CSS Modules](https://github.com/css-modules/css-modules)** automatically namespace your CSS classes. However, instead of runtime prefixing with React, it relies on your build system to do the prefixing.
 
@@ -283,7 +283,7 @@ Use CSS Modules instead when performance counts, you don't mind being a little m
 - Depends on a build system
 - Does not handle `props.className` automatically
 - Does not append a root class automatically
-- DOes not handle [classnames](npmjs.com/package/classnames) objects
+- Does not handle [classnames](npmjs.com/package/classnames) objects
 - You don't know your class names ahead of time, meaning no monkey-patching
 
 ### Inline Style
