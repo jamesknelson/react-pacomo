@@ -1,13 +1,29 @@
 import classNames from 'classnames'
 import { isValidElement, cloneElement, Children, PropTypes } from 'react'
 
+function pacomoStrategy(packageName){
+    const strategy = {
+        getComponentName: function(component){
+            return component.displayName || component.name;
+        },
+        getComponentClassName: function(component){
+            const componentName = strategy.getComponentName(component);
+            return  `${packageName}-${componentName}`;
+        },
+        getPropClassName: function(component, name){
+            const prefix = strategy.getComponentClassName(component);
+            return `${prefix}-${name}`;
+        }
+    };
+    return strategy;
+}
 
-export function prefixedClassNames(prefix, ...args) {
+export function prefixedClassNames(strategy, component, ...args) {
   return (
     classNames(...args)
       .split(/\s+/)
-      .filter(name => name !== "")
-      .map(name => `${prefix}-${name}`)
+      .filter(name => !!name)
+      .map(name => strategy.getPropClassName(component, name))
       .join(' ')
   )
 }
@@ -46,7 +62,7 @@ function transformElementProps(props, fn, childrenOnly) {
       changes.children = transformedChildren
     }
   }
-  
+
   if (!childrenOnly) {
     for (let key of Object.keys(props)) {
       if (key == 'children') continue
@@ -75,7 +91,7 @@ function skipPropElements(props) {
 }
 
 
-export function transformWithPrefix(prefix) {
+export function transformWithPrefix(strategy, componentFunction) {
   const childTransform = element => transform(element)
 
   // Prefix all `className` props on the passed in ReactElement object, its
@@ -92,7 +108,7 @@ export function transformWithPrefix(prefix) {
     )
 
     if (element.props.className) {
-      changes.className = `${rootClass || ''} ${prefixedClassNames(prefix, element.props.className)} ${suffixClasses}`
+      changes.className = `${rootClass || ''} ${prefixedClassNames(strategy, componentFunction, element.props.className)} ${suffixClasses}`
     }
     else if (rootClass) {
       changes.className = `${rootClass} ${suffixClasses}`
@@ -108,19 +124,21 @@ export function transformWithPrefix(prefix) {
   return transform
 }
 
+export function withPackageName(packageName){
+    return withStrategy(pacomoStrategy(packageName));
+}
 
-export function withPackageName(packageName) {
+export function withStrategy(strategy) {
   return {
     // Transform a stateless function component
     transformer(componentFunction) {
-      const componentName = componentFunction.displayName || componentFunction.name
-      const prefix = `${packageName}-${componentName}`
-      const transform = transformWithPrefix(prefix)
+      const componentName = strategy.getComponentName(componentFunction);
+      const transform = transformWithPrefix(strategy, componentFunction)
 
       const transformedComponent = (props, ...args) =>
         transform(
           componentFunction(skipPropElements(props), ...args),
-          prefix,
+          strategy.getComponentClassName(componentFunction),
           props.className
         )
 
@@ -135,15 +153,14 @@ export function withPackageName(packageName) {
 
     // Transform a React.Component class
     decorator(componentClass) {
-      const componentName = componentClass.displayName || componentClass.name
-      const prefix = `${packageName}-${componentName}`
-      const transform = transformWithPrefix(prefix)
+      const componentName = strategy.getComponentName(componentClass);
+      const transform = transformWithPrefix(strategy, componentClass)
 
       const DecoratedComponent = class DecoratedComponent extends componentClass {
         render() {
           const rawProps = this.props
           this.props = skipPropElements(this.props)
-          const transformed = transform(super.render(), prefix, this.props.className)
+          const transformed = transform(super.render(), strategy.getComponentClassName(componentClass), this.props.className)
           this.props = rawProps
           return transformed
         }
@@ -151,10 +168,7 @@ export function withPackageName(packageName) {
 
       DecoratedComponent.displayName = `pacomo(${componentName})`
 
-      // Add `className` propType, if none exists
-      DecoratedComponent.propTypes = { className: PropTypes.string, ...componentClass.propTypes }
-
-      return DecoratedComponent  
+      return DecoratedComponent
     },
   }
 }
