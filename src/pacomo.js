@@ -1,30 +1,21 @@
 import classNames from 'classnames'
 import { isValidElement, cloneElement, Children, PropTypes } from 'react'
 
-export class PacomoStrategy {
-
-    constructor(packageName){
-        this.packageName = packageName;
-    }
-
-    static withPackageName(packageName){
-        return new PacomoStrategy(packageName)
-    }
-
-    getComponentName(component){
-        return component.displayName || component.name;
-    }
-
-    getComponentClassName(component){
-        const componentName = this.getComponentName(component);
-        return  `${this.packageName}-${componentName}`;
-    }
-
-    getPropClassName(component, name){
-        const prefix = this.getComponentClassName(component);
-        return `${prefix}-${name}`;
-    }
-
+function pacomoStrategy(packageName){
+    const strategy = {
+        getComponentName: function(component){
+            return component.displayName || component.name;
+        },
+        getComponentClassName: function(component){
+            const componentName = strategy.getComponentName(component);
+            return  `${packageName}-${componentName}`;
+        },
+        getPropClassName: function(component, name){
+            const prefix = strategy.getComponentClassName(component);
+            return `${prefix}-${name}`;
+        }
+    };
+    return strategy;
 }
 
 export function prefixedClassNames(strategy, component, ...args) {
@@ -134,7 +125,7 @@ export function transformWithPrefix(strategy, componentFunction) {
 }
 
 export function withPackageName(packageName){
-    return withStrategy(PacomoStrategy.withPackageName(packageName));
+    return withStrategy(pacomoStrategy(packageName));
 }
 
 export function withStrategy(strategy) {
