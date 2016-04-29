@@ -14,7 +14,7 @@ export function prefixedClassNames(prefix, ...args) {
 
 
 const ignoredFunctionStatics =
-  Object.getOwnPropertyNames(function(){}).concat(['displayName', 'propTypes'])
+  Object.getOwnPropertyNames(function(){}).concat(['displayName', 'propTypes', 'name'])
 
 
 function hoistFunctionStatics(source, target) {
