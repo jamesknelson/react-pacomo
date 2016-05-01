@@ -124,8 +124,6 @@ export function withPackageName(packageName) {
           props.className
         )
 
-      transformedComponent.displayName = `pacomo(${componentName})`
-
       // Add `className` propType, if none exists
       transformedComponent.propTypes = { className: PropTypes.string, ...componentFunction.propTypes }
 
@@ -148,8 +146,6 @@ export function withPackageName(packageName) {
           return transformed
         }
       }
-
-      DecoratedComponent.displayName = `pacomo(${componentName})`
 
       // Add `className` propType, if none exists
       DecoratedComponent.propTypes = { className: PropTypes.string, ...componentClass.propTypes }
