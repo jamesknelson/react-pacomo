@@ -114,7 +114,7 @@ export function withPackageName(packageName) {
     // Transform a stateless function component
     transformer(componentFunction) {
       const componentName = componentFunction.displayName || componentFunction.name
-      const prefix = `${packageName}-${componentName}`
+      const prefix = packageName ? `${packageName}-${componentName}` : componentName;
       const transform = transformWithPrefix(prefix)
 
       const transformedComponent = (props, ...args) =>
@@ -136,7 +136,7 @@ export function withPackageName(packageName) {
     // Transform a React.Component class
     decorator(componentClass) {
       const componentName = componentClass.displayName || componentClass.name
-      const prefix = `${packageName}-${componentName}`
+      const prefix = packageName ? `${packageName}-${componentName}` : componentName;
       const transform = transformWithPrefix(prefix)
 
       const DecoratedComponent = class DecoratedComponent extends componentClass {

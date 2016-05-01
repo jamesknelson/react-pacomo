@@ -211,6 +211,15 @@ describe('#render', () => {
       true
     )
   })
+
+  it("works correctly when packageName is optional", () => {
+    const rendered = shallowRenderComponent(withPackageName().decorator(BareComponent))
+
+    assert.equal(
+      rendered.props.className.trim(),
+      'BareComponent'
+    )
+  })
 })
 
 
