@@ -92,10 +92,10 @@ export function transformWithPrefix(prefix) {
     )
 
     if (element.props.className) {
-      changes.className = `${rootClass || ''} ${prefixedClassNames(prefix, element.props.className)} ${suffixClasses}`
+      changes.className = `${rootClass || ''} ${prefixedClassNames(prefix, element.props.className)} ${suffixClasses}`.trim()
     }
     else if (rootClass) {
-      changes.className = `${rootClass} ${suffixClasses}`
+      changes.className = `${rootClass} ${suffixClasses}`.trim()
     }
 
     return (

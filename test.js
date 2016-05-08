@@ -195,7 +195,7 @@ describe('#render', () => {
     const rendered = shallowRenderComponent(decorator(BareComponent))
 
     assert.equal(
-      rendered.props.className.trim(),
+      rendered.props.className,
       'prefix-BareComponent'
     )
   })
@@ -240,7 +240,7 @@ describe('stateless render', () => {
     const rendered = shallowRenderComponent(transformer(BareStatelessComponent))
 
     assert.equal(
-      rendered.props.className.trim(),
+      rendered.props.className,
       'prefix-BareStatelessComponent'
     )
   })
@@ -297,7 +297,7 @@ describe('transformWithPrefix', () => {
 
     assert.equal(
       transformed.props.className,
-      ' test-nav '
+      'test-nav'
     )
   })
 
@@ -306,11 +306,11 @@ describe('transformWithPrefix', () => {
 
     assert.equal(
       transformed.props.children[0].props.className,
-      ' test-link1 test-active '
+      'test-link1 test-active'
     )
     assert.equal(
       transformed.props.children[1].props.className,
-      ' test-link2 '
+      'test-link2'
     )
   })
 
@@ -319,7 +319,7 @@ describe('transformWithPrefix', () => {
 
     assert.equal(
       transformed.props.children[0].props.focusable.props.className,
-      ' test-Link '
+      'test-Link'
     )
   })
 
