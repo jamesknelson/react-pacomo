@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/jamesknelson/react-pacomo#readme",
   "peerDependencies": {
-    "react": "^0.14.0"
+    "react": "^0.14.0 || ^15.0.0"
   },
   "dependencies": {
     "babel-polyfill": "^6.1.18",
