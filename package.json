@@ -1,6 +1,6 @@
 {
   "name": "react-pacomo",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Provide structure to your component's CSS.",
   "main": "lib/pacomo.js",
   "scripts": {
