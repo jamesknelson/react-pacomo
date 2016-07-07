@@ -65,16 +65,7 @@ function transformElementProps(props, fn, childrenOnly) {
 
 
 function cloneElementWithSkip(element) {
-  const cloned = cloneElement(element)
-  if (cloned._store) {
-    // Only available in dev mode
-    cloned._store.__pacomoSkip = true
-  }
-  else {
-    // Only writable outside of dev mode
-    cloned.__pacomoSkip = true
-  }
-  return cloned
+  return cloneElement(element, {'data-pacomoSkip': true})
 }
 
 
@@ -92,7 +83,7 @@ export function transformWithPrefix(prefix) {
   //
   // Optionally prefix with a `rootClass` and postfix with `suffixClass`.
   function transform(element, rootClass, suffixClasses='') {
-    if (typeof element !== 'object' || element.__pacomoSkip || (element._store && element._store.__pacomoSkip)) return element
+    if (typeof element !== 'object' || element.props['data-pacomoSkip']) return element
 
     const changes = transformElementProps(
       element.props,
