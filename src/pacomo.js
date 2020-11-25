@@ -1,5 +1,6 @@
 import classNames from 'classnames'
-import { isValidElement, cloneElement, Children, PropTypes } from 'react'
+import PropTypes from 'prop-types'
+import { isValidElement, cloneElement, Children } from 'react'
 
 
 export function prefixedClassNames(prefix, ...args) {
@@ -46,7 +47,7 @@ function transformElementProps(props, fn, childrenOnly) {
       changes.children = transformedChildren
     }
   }
-  
+
   if (!childrenOnly) {
     for (let key of Object.keys(props)) {
       if (key == 'children') continue
@@ -65,7 +66,7 @@ function transformElementProps(props, fn, childrenOnly) {
 
 
 function cloneElementWithSkip(element) {
-  return cloneElement(element, {'data-pacomoSkip': true})
+  return cloneElement(element, {'data-pacomoskip': true})
 }
 
 
@@ -83,7 +84,7 @@ export function transformWithPrefix(prefix) {
   //
   // Optionally prefix with a `rootClass` and postfix with `suffixClass`.
   function transform(element, rootClass, suffixClasses='') {
-    if (typeof element !== 'object' || element.props['data-pacomoSkip']) return element
+    if (typeof element !== 'object' || element.props['data-pacomoskip']) return element
 
     const changes = transformElementProps(
       element.props,
@@ -150,7 +151,7 @@ export function withPackageName(packageName) {
       // Add `className` propType, if none exists
       DecoratedComponent.propTypes = { className: PropTypes.string, ...componentClass.propTypes }
 
-      return DecoratedComponent  
+      return DecoratedComponent
     },
   }
 }

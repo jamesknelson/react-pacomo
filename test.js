@@ -1,6 +1,7 @@
 import 'babel-polyfill'
 import {prefixedClassNames, withPackageName, transformWithPrefix} from './lib/pacomo'
-import React, {Component, PropTypes} from 'react'
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import TestUtils from 'react-addons-test-utils'
 import assert from 'assert'
 
@@ -16,7 +17,7 @@ const { transformer, decorator } = withPackageName('prefix')
 function shallowRenderElement(element) {
  const shallowRenderer = TestUtils.createRenderer()
   shallowRenderer.render(element)
-  return shallowRenderer.getRenderOutput() 
+  return shallowRenderer.getRenderOutput()
 }
 
 function shallowRenderComponent(Component, props) {
