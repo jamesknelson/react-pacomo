@@ -66,8 +66,9 @@ function transformElementProps(props, fn, childrenOnly) {
 
 
 function cloneElementWithSkip(element) {
-  return cloneElement(element, {'data-pacomoskip': true})
+  return cloneElement(element, {__pacomoSkip: true})
 }
+
 
 
 // Add the `__pacomoSkip` prop to any elements in the passed in `props` object
@@ -84,7 +85,8 @@ export function transformWithPrefix(prefix) {
   //
   // Optionally prefix with a `rootClass` and postfix with `suffixClass`.
   function transform(element, rootClass, suffixClasses='') {
-    if (typeof element !== 'object' || element.props['data-pacomoskip']) return element
+    if (typeof element !== 'object' || element.props['__pacomoSkip']) return element
+         console.log('Skipping transformation due to __pacomoSkip');
 
     const changes = transformElementProps(
       element.props,

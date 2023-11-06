@@ -1,27 +1,25 @@
-import 'babel-polyfill'
-import {prefixedClassNames, withPackageName, transformWithPrefix} from './lib/pacomo'
-import React, {Component} from 'react'
-import PropTypes from 'prop-types'
-import TestUtils from 'react-addons-test-utils'
-import assert from 'assert'
+import { prefixedClassNames, withPackageName, transformWithPrefix } from './lib/pacomo';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { createRenderer } from 'react-test-renderer/shallow';
+import assert from 'assert';
 
+const testTransform = transformWithPrefix('test');
 
-const testTransform = transformWithPrefix('test')
 const { transformer, decorator } = withPackageName('prefix')
 
 
 /*
  * Util
  */
-
 function shallowRenderElement(element) {
- const shallowRenderer = TestUtils.createRenderer()
-  shallowRenderer.render(element)
-  return shallowRenderer.getRenderOutput()
+  const shallowRenderer = createRenderer();
+  shallowRenderer.render(element);
+  return shallowRenderer.getRenderOutput();
 }
 
 function shallowRenderComponent(Component, props) {
-  return shallowRenderElement(<Component {...props} />)
+  return shallowRenderElement(<Component {...props} />);
 }
 
 
@@ -357,4 +355,5 @@ describe('transformWithPrefix', () => {
       originalElement.props.children[0].props.untransformed
     )
   })
+
 })
